@@ -12,9 +12,9 @@ async def hello_server(websocket, path):
     await websocket.send(greeting)
     print(f"> {greeting}")
 
-async def hello_client():
+async def hello_client(dest):
     async with websockets.connect(
-            'ws://localhost:8765') as websocket:
+            'ws://' + dest + ':8765') as websocket:
         name = input("What's your name? ")
 
         await websocket.send(name)
@@ -31,12 +31,12 @@ def main():
     
     # hostname based logic
     if arg1 == "server":
-        start_server = websockets.serve(hello_server, 'localhost', 8765)
+        start_server = websockets.serve(hello_server, '*', 8765)
 
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever()
     else:
-        asyncio.get_event_loop().run_until_complete(hello_client())
+        asyncio.get_event_loop().run_until_complete(hello_client(arg1))
 
 if __name__ == '__main__':
    main()
