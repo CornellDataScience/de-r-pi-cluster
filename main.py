@@ -30,7 +30,7 @@ def main():
     hostname = socket.gethostname()
     
     # hostname based logic
-    if hostname == "cds-pi-1":
+    if arg1 == "server":
         start_server = websockets.serve(hello_server, 'localhost', 8765)
 
         asyncio.get_event_loop().run_until_complete(start_server)
