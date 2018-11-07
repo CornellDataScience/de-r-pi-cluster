@@ -22,7 +22,7 @@ async def hello_server(websocket, path):
 
 async def hello_client(dest):
     async with websockets.connect(
-            'ws://' + dest + ':8765') as websocket:
+            'ws://' + dest) as websocket:
         name = input("What's your name? ")
 
         await websocket.send(name)
@@ -55,7 +55,7 @@ def main():
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever()
     else:
-        asyncio.get_event_loop().run_until_complete(hello_client(arg1))
+        asyncio.get_event_loop().run_until_complete((arg1))
 
 
 # if __name__ == '__main__':
