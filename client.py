@@ -1,6 +1,7 @@
 import websockets
 import time
 import socket
+from os import linesep
 
 async def run(dest):
     async with websockets.connect(
@@ -15,7 +16,7 @@ async def run(dest):
         while True:
             # get problem
             problem = await websocket.recv()
-            print(f"received start value {problem}")
+            print(f"received problem: {problem}")
 
             # TODO: do processing here
             solution = str(int(problem) + 1)
@@ -23,8 +24,5 @@ async def run(dest):
 
             # send result back to server
             await websocket.send(solution)
-            print(f"sent to server: {solution}")
-            
-            # get a new problem
-            problem = await websocket.recv()
-            print(f"received from server: {problem}")
+            print(f"sent solution: {solution}")
+            print(linesep)

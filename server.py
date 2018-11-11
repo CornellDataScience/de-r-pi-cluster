@@ -5,7 +5,7 @@ async def run(websocket, path):
     client_name = await websocket.recv()
     client_port = websocket.port
     id = str(client_name) + ":" + str(client_port)
-    print(f"({id}) sent ID")
+    print(f"({id}) ID recieved")
 
     while True:
         # send problem to client
@@ -15,4 +15,4 @@ async def run(websocket, path):
 
         # get solution from client
         solution = await websocket.recv()
-        print(f"({id}) received from client: {solution}")
+        print(f"({id}) received solution: {solution}")
