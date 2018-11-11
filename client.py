@@ -1,7 +1,8 @@
 import websockets
 import time
 import socket
-from os import linesep
+from os import linesep as ls
+import json
 
 async def run(dest):
     async with websockets.connect(
@@ -15,14 +16,15 @@ async def run(dest):
         
         while True:
             # get problem
-            problem = await websocket.recv()
+            problem = json.loads(await websocket.recv())
             print(f"received problem: {problem}")
 
             # TODO: do processing here
-            solution = str(int(problem) + 1)
+            solution = str(int(problem["content"]) + 1)
             time.sleep(5)
 
             # send result back to server
-            await websocket.send(solution)
-            print(f"sent solution: {solution}")
-            print(linesep)
+            solution_package = {"content": solution}
+            await websocket.send(json.dumps(solution_package))
+            print(f"sent solution: {solution_package}")
+            print(ls)

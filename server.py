@@ -1,4 +1,21 @@
 import random
+from threading import RLock
+from os import linesep as ls
+import json
+
+results_lock = RLock()
+results = {}
+
+def save_solution(client_id, soln):
+    with results_lock:
+        if client_id in results:
+            results[client_id].append(soln)
+        else:
+            results[client_id] = [soln]
+        
+        print(ls + "-=-=-=-=-=-=-=-=-=-=-")
+        print("results: " + str(results))
+        print("-=-=-=-=-=-=-=-=-=-=-" + ls)
 
 async def run(websocket, path):
     # get ID data
@@ -9,10 +26,14 @@ async def run(websocket, path):
 
     while True:
         # send problem to client
-        problem = str(random.randint(0,100))
-        await websocket.send(problem)
+        problem = random.randint(0,100)
+        problem_package = {"content": problem}
+        await websocket.send(json.dumps(problem_package))
         print(f"({id}) sent problem: {problem}")
 
         # get solution from client
-        solution = await websocket.recv()
+        solution = json.loads(await websocket.recv())
         print(f"({id}) received solution: {solution}")
+
+        # save solution
+        save_solution(id, solution["content"])
