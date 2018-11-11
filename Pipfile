@@ -4,9 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+pylint = "*"
 
 [packages]
 websockets = "*"
+aiohttp = "*"
 
 [requires]
 python_version = "3.6"
