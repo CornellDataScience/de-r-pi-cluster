@@ -19,9 +19,9 @@ def main():
         print("Server starting...")
         # create 3 servers
         # TODO: make this not terrible
-        server_1 = websockets.serve(server.run, host='localhost', port=8765)
-        server_2 = websockets.serve(server.run, host='localhost', port=8766)
-        server_3 = websockets.serve(server.run, host='localhost', port=8767)
+        server_1 = websockets.serve(server.run, host='*', port=8765)
+        server_2 = websockets.serve(server.run, host='*', port=8766)
+        server_3 = websockets.serve(server.run, host='*', port=8767)
 
         asyncio.get_event_loop().run_until_complete(server_1)
         asyncio.get_event_loop().run_until_complete(server_2)
