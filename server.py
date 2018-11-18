@@ -1,9 +1,9 @@
 import random
-from threading import RLock
+from threading import Lock
 from os import linesep as ls
 import json
 
-results_lock = RLock()
+results_lock = Lock()
 results = {}
 
 def save_solution(client_id, soln):
