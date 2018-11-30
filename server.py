@@ -2,6 +2,9 @@ import random
 from threading import Lock
 from os import linesep as ls
 import json
+
+urls_lock = Lock()
+
 # unsent, interested in last value
 unsent_urls =   ["https://static1.squarespace.com/static/59ec1dc7268b9699fe3a82ce/t/5bae8df74785d3638a102c1a/1538166381084/download+-+Nolan+Gray.png",
                 "https://static1.squarespace.com/static/59ec1dc7268b9699fe3a82ce/t/5baa55fa24a694c239750c1d/1537889846029/20180824_144614+-+Linnea+May.jpg",
@@ -19,6 +22,8 @@ sent_urls = []
 results_lock = Lock()
 results = {}
 
+#TODO: sqlite setup goes here
+
 def save_solution(client_id, soln):
     with results_lock:
         if client_id in results:
@@ -29,6 +34,11 @@ def save_solution(client_id, soln):
         print(ls + "-=-=-=-=-=-=-=-=-=-=-")
         print("results: " + str(results))
         print("-=-=-=-=-=-=-=-=-=-=-" + ls)
+
+def get_next_url():
+    with urls_lock:
+        #TODO: content
+        pass
 
 async def run(websocket, path):
     # get ID data
