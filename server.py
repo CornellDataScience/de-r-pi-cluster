@@ -82,7 +82,11 @@ def save_solution(client_id, soln, url):
                     url_id = create_url(conn, urls)
             return None
 
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> e40daa3777c1fa12cf9671209add203baf2ba33c
         if __name__ == '__main__':
             main()
 
