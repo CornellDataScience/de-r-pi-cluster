@@ -35,10 +35,14 @@ def save_solution(client_id, soln):
         print("results: " + str(results))
         print("-=-=-=-=-=-=-=-=-=-=-" + ls)
 
+# return popped urls, no args
+# method changes unsent_urls
 def get_next_url():
     with urls_lock:
-        #TODO: content
-        pass
+        problem = unsent_urls.pop()
+        sent_urls.append(problem)
+        return problem
+
 
 async def run(websocket, path):
     # get ID data
@@ -50,13 +54,15 @@ async def run(websocket, path):
     while True:
         # send problem to client
         # OLD: problem = random.randint(0,100)
-        problem = unsent_urls.pop()
-
+        # problem = unsent_urls.pop()
         # dictionary version of sent urls?
-        problem_package = {"url": problem}
-
+        # problem_package = {"url": problem}
         # problem is popped url, put into sent list
-        sent_urls.append(problem)
+        # sent_urls.append(problem)
+
+        # using get_next_url method instead of old way
+        problem = get_next_url()
+        problem_package = {"url": problem}
 
         await websocket.send(json.dumps(problem_package))
         print(f"({id}) sent problem: {problem}")
