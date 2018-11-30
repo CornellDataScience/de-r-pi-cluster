@@ -24,7 +24,7 @@ results = {}
 
 #TODO: sqlite setup goes here
 
-def save_solution(client_id, soln):
+def save_solution(client_id, soln, url):
     with results_lock:
         if client_id in results:
             results[client_id].append(soln)
@@ -34,6 +34,57 @@ def save_solution(client_id, soln):
         print(ls + "-=-=-=-=-=-=-=-=-=-=-")
         print("results: " + str(results))
         print("-=-=-=-=-=-=-=-=-=-=-" + ls)
+
+        # create database connection
+        def create_connection(db_file):
+            try:
+                conn = sqlite3.connect(db_file)
+                return conn
+            except Error as e:
+                print(e)
+
+        # execute create table query
+        def create_table(conn, create_table_sql):
+            try:
+                c = conn.cursor()
+                c.execute(create_table_sql)
+            except Error as e:
+                print(e)
+
+        # create a new row in the table (new url)
+        def create_url(conn, urls):
+            sql = ''' INSERT INTO urls(client_id,urls,results)
+                      VALUES(?,?,?) '''
+            cur = conn.cursor()
+            cur.execute(sql, urls)
+            return cur.lastrowid
+
+        # queries including creating table with ID, client_id, results, url
+        def main():
+            database = "/Users/audreyfan/github/de-r-pi-cluster"
+
+            sql_create_urls_table = """ CREATE TABLE IF NOT EXISTS urls(
+                                                id integer PRIMARY KEY,
+                                                client_id varchar,
+                                                url text,
+                                                results text
+                                            ); """
+
+            # create a database connection
+            conn = create_connection(database)
+            if conn is not None:
+                # create urls table
+                create_table(conn, sql_create_urls_table)
+            else:
+                print("Error! cannot create the database connection.")
+            with conn:
+                    urls = (client_id, url, soln)
+                    url_id = create_url(conn, urls)
+            return None
+
+
+        if __name__ == '__main__':
+            main()
 
 # return popped urls, no args
 # method changes unsent_urls
