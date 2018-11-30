@@ -39,9 +39,13 @@ def save_solution(client_id, soln):
 # method changes unsent_urls
 def get_next_url():
     with urls_lock:
-        problem = unsent_urls.pop()
-        sent_urls.append(problem)
-        return problem
+        if unsent_urls:
+            problem = unsent_urls.pop()
+            sent_urls.append(problem)
+            return problem
+        else:
+            print("All images sent!")
+            return None
 
 
 async def run(websocket, path):
@@ -62,14 +66,17 @@ async def run(websocket, path):
 
         # using get_next_url method instead of old way
         problem = get_next_url()
-        problem_package = {"url": problem}
+        if problem:
+            problem_package = {"url": problem}
 
-        await websocket.send(json.dumps(problem_package))
-        print(f"({id}) sent problem: {problem}")
+            await websocket.send(json.dumps(problem_package))
+            print(f"({id}) sent problem: {problem}")
 
-        # get solution from client
-        solution = json.loads(await websocket.recv())
-        print(f"({id}) received solution: {solution}")
+            # get solution from client
+            solution = json.loads(await websocket.recv())
+            print(f"({id}) received solution: {solution}")
 
-        # save solution
-        save_solution(id, solution["content"])
+            # save solution
+            save_solution(id, solution)
+        else:
+            return
