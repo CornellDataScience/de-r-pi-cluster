@@ -77,6 +77,6 @@ async def run(websocket, path):
             print(f"({id}) received solution: {solution}")
 
             # save solution
-            save_solution(id, solution)
+            # save_solution(id, solution)
         else:
             return
