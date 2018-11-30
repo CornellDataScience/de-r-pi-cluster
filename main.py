@@ -2,34 +2,11 @@ import sys
 import socket
 import asyncio
 import websockets
-# import threading
-# class T1 (threading.Thread):
-#     def run (self):
-#         # stuff here
-# class T2 (threading.Thread):
-#     def run(self):
+import signal
+import server
+import client
 
-
-
-async def hello_server(websocket, path):
-    name = await websocket.recv()
-    print(f"< {name}")
-
-    greeting = f"Hello {name}!"
-
-    await websocket.send(greeting)
-    print(f"> {greeting}")
-
-async def hello_client(dest):
-    async with websockets.connect(
-            'ws://' + dest) as websocket:
-        name = input("What's your name? ")
-
-        await websocket.send(name)
-        print(f"> {name}")
-
-        greeting = await websocket.recv()
-        print(f"< {greeting}")
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 def main():
     script = sys.argv[0]
@@ -41,9 +18,18 @@ def main():
     # server prints ports it recieved message, and print message, and send hello back to client
     # hostname based logic
     if arg1 == "server":
-        start_server = websockets.serve(hello_server, '*', 8765)
+        print("Server starting...")
+        # create 3 servers
+        # TODO: make this not terrible
+        server_1 = websockets.serve(server.run, host='*', port=8765)
+        server_2 = websockets.serve(server.run, host='*', port=8766)
+        server_3 = websockets.serve(server.run, host='*', port=8767)
 
-        asyncio.get_event_loop().run_until_complete(start_server)
+        asyncio.get_event_loop().run_until_complete(server_1)
+        asyncio.get_event_loop().run_until_complete(server_2)
+        asyncio.get_event_loop().run_until_complete(server_3)
+
+        # run event loop
         asyncio.get_event_loop().run_forever()
     if arg1 == "server1":
         start_server = websockets.serve(hello_server, '*', 8766)
@@ -55,7 +41,8 @@ def main():
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever()
     else:
-        asyncio.get_event_loop().run_until_complete((arg1))
+        print("Client starting...")
+        asyncio.get_event_loop().run_until_complete(client.run(arg1))
 
 
 # if __name__ == '__main__':
