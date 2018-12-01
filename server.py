@@ -95,6 +95,6 @@ async def run(websocket, path):
 
             # save solution
             # save_solution(id, solution)
-            save_solution_old(id, solution, problem)
+            save_solution_old(id, solution[0], problem)
         else:
             return
