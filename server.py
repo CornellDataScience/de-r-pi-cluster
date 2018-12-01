@@ -1,7 +1,8 @@
 import random
 from threading import Lock
 from os import linesep as ls
-from os.path import join
+from os import makedirs
+from os.path import join, exists
 import json
 import urllib.request
 import face_recognition
@@ -40,7 +41,11 @@ def save_solution(client_id, soln):
         print("-=-=-=-=-=-=-=-=-=-=-" + ls)
 
 def save_solution_old(client_id, soln, url):
-    name = join("images", url.split("/")[-1])
+    directory = "images"
+    if not exists(directory):
+        makedirs(directory)
+
+    name = join(directory, url.split("/")[-1])
     image_path, headers = urllib.request.urlretrieve(url, name)
     image = face_recognition.load_image_file(image_path)
     top, right, bottom, left = soln
