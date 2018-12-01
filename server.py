@@ -1,7 +1,11 @@
 import random
 from threading import Lock
 from os import linesep as ls
+from os.path import join
 import json
+import urllib.request
+import face_recognition
+from PIL import Image
 
 urls_lock = Lock()
 
@@ -34,6 +38,15 @@ def save_solution(client_id, soln):
         print(ls + "-=-=-=-=-=-=-=-=-=-=-")
         print("results: " + str(results))
         print("-=-=-=-=-=-=-=-=-=-=-" + ls)
+
+def save_solution_old(client_id, soln, url):
+    name = join("images", url.split("/")[-1])
+    image_path, headers = urllib.request.urlretrieve(url, name)
+    image = face_recognition.load_image_file(image_path)
+    top, right, bottom, left = soln
+    face = image[top:bottom, left:right]
+    pil_image = Image.fromarray(face)
+    pil_image.save(name + "_face.bmp")
 
 # return popped urls, no args
 # method changes unsent_urls
@@ -78,5 +91,6 @@ async def run(websocket, path):
 
             # save solution
             # save_solution(id, solution)
+            save_solution_old(id, solution, problem)
         else:
             return
