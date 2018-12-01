@@ -48,8 +48,7 @@ def save_solution_old(client_id, soln, url):
     name = join(directory, url.split("/")[-1])
     image_path, headers = urllib.request.urlretrieve(url, name)
     image = face_recognition.load_image_file(image_path)
-    top, right, bottom, left = soln
-    face = image[top:bottom, left:right]
+    face = image[soln[0]:soln[2], soln[3]:soln[1]]
     pil_image = Image.fromarray(face)
     pil_image.save(name + "_face.bmp")
 
